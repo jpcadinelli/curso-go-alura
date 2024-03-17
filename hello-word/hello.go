@@ -4,14 +4,21 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
 
+const monitoramentos = 3
+const delay = 5
+
 func main() {
+	fmt.Println("")
 	exibeIntrodução()
+	fmt.Println("")
 	for {
 		exibeMenu()
+		fmt.Println("")
 		comando := leComando()
-	
+		fmt.Println("")
 		switch comando {
 		case 1:
 			iniciarMonitoramento()
@@ -24,6 +31,7 @@ func main() {
 			fmt.Println("Não conheço este comando.")
 			os.Exit(-1)
 		}
+		fmt.Println("")
 	}
 }
 
@@ -49,11 +57,17 @@ func leComando() int {
 
 func iniciarMonitoramento() {
 	fmt.Println("Monitorando...")
-	site := "https://www.alura.com.br"
-	resp, _ := http.Get(site)
-	if resp.StatusCode == 200 {
-		fmt.Println("Site:", site, "foi carregado com sucesso!")
-	} else {
-		fmt.Println("Site:", site, "está com problemas. Status Code:", resp.StatusCode)
+	sites := []string{"https://www.alura.com.br", "https://www.caelum.com.br", "https://www.kabum.com.br"}
+	for i := 0; i < monitoramentos; i++ {
+		for i := 0; i < len(sites); i++ {
+			resp, _ := http.Get(sites[i])
+			if resp.StatusCode == 200 {
+				fmt.Println("Site:", sites[i], "foi carregado com sucesso!")
+			} else {
+				fmt.Println("Site:", sites[i], "está com problemas. Status Code:", resp.StatusCode)
+			}
+		}
+		fmt.Println("")
+		time.Sleep(delay * time.Second)
 	}
 }
