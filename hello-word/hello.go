@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -51,16 +54,20 @@ func exibeMenu() {
 func leComando() int {
 	var comandoLido int
 	fmt.Scan(&comandoLido)
-	fmt.Println("O comando escolhido foi", comandoLido)
+	// fmt.Println("O comando escolhido foi", comandoLido)
 	return comandoLido
 }
 
 func iniciarMonitoramento() {
 	fmt.Println("Monitorando...")
-	sites := []string{"https://www.alura.com.br", "https://www.caelum.com.br", "https://www.kabum.com.br"}
+	sites := leSitesDoArquivo()
+
 	for i := 0; i < monitoramentos; i++ {
 		for i := 0; i < len(sites); i++ {
-			resp, _ := http.Get(sites[i])
+			resp, err := http.Get(sites[i])
+			if err != nil {
+				fmt.Println("Ocorreu um erro:", err)
+			}
 			if resp.StatusCode == 200 {
 				fmt.Println("Site:", sites[i], "foi carregado com sucesso!")
 			} else {
@@ -70,4 +77,23 @@ func iniciarMonitoramento() {
 		fmt.Println("")
 		time.Sleep(delay * time.Second)
 	}
+}
+
+func leSitesDoArquivo() []string {
+	var sites []string
+	arquivo, err := os.Open("sites.txt")
+	if err != nil {
+		fmt.Println("Ocorreu um erro:", err)
+	}
+	leitor := bufio.NewReader(arquivo)
+	for {
+        linha, err := leitor.ReadString('\n')
+		linha = strings.TrimSpace(linha)
+		sites = append(sites, linha)
+        if err == io.EOF {
+            break
+        }
+    }
+	arquivo.Close()
+	return sites
 }
