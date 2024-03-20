@@ -1,7 +1,9 @@
 package contas
 
+import "curso-go-alura/gestao-contas-bank/clientes"
+
 type ContaCorrente struct {
-	Titular       string
+	Titular       clientes.Titular
 	NumeroAgencia int
 	NumeroConta   int
 	Saldo         float64
