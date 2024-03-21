@@ -1,9 +1,9 @@
 package main
 
 import (
+	"banco/clientes"
+	"banco/contas"
 	"fmt"
-	"gestaoContasBank/clientes"
-	"gestaoContasBank/contas"
 )
 
 func main() {
@@ -12,5 +12,5 @@ func main() {
 		CPF:       "123.456.789-00",
 		Profissao: "Engenheiro de Software"},
 		NumeroAgencia: 589, NumeroConta: 123456, Saldo: 158.99}
-	fmt.Println(contaDoJoao)
+	fmt.Println(contaDoJoao.Sacar(100))
 }
